@@ -25,6 +25,24 @@ jobs:
           mkdir build-src
           unzip -q ShivSalesStockManager_v1_source.zip -d build-src
 
+      - name: Fix Java and Kotlin JVM targets
+        run: |
+          cat >> build-src/app/build.gradle <<'EOF'
+
+          android {
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_17
+                  targetCompatibility JavaVersion.VERSION_17
+              }
+          }
+
+          tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+              kotlinOptions {
+                  jvmTarget = "17"
+              }
+          }
+          EOF
+
       - name: Install Gradle
         run: |
           wget -q https://services.gradle.org/distributions/gradle-8.10.2-bin.zip
